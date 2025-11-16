@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id                   String         @id @default(cuid())
+  name                 String
+  phone                String
+  flatNo               String
+  active               Boolean        @default(true)
+  electricityService   Boolean        @default(false)
+  electricityRate      Float?
+  initialMeterReading  Int?
+  currentMeterReading  Int?
+  rentService          Boolean        @default(false)
+  monthlyRent          Int?
+  rentDueDay           Int?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  bills                Bill[]
+  rentPayments         RentPayment[]
+
+  @@map("tenants")
+}
+
+model Bill {
+  id              String   @id @default(cuid())
+  tenantId        String
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  period          String
+  previousReading Int
+  currentReading  Int
+  unitsConsumed   Int
+  amount          Float
+  status          String   @default("pending")
+  date            String
+  paidDate        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("bills")
+}
+
+model RentPayment {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  month     String
+  amount    Int
+  dueDate   String
+  status    String   @default("pending")
+  paidDate  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rent_payments")
+}
