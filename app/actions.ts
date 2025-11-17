@@ -10,10 +10,11 @@ import {
   createBill,
   updateBill,
   getAllRentPayments,
-  updateRentPayment
+  updateRentPayment,
+  getCurrentBills
 } from '../lib/db';
 import { Tenant, Bill, RentPayment } from '../lib/types';
-import { getCurrentPeriod, formatDateToISO } from '../lib/date-utils';
+import { getBillingPeriod, formatDateToISO} from '../lib/date-utils';
 
 // Tenant Actions
 export async function getTenants() {
@@ -42,6 +43,10 @@ export async function getBills() {
   return await getAllBills();
 }
 
+export async function getCurrentMonthBills(){
+  return await getCurrentBills();
+}
+
 export async function generateBill(tenantId: string, currentReading: number) {
   const tenants = await getAllTenants();
   const tenant = tenants.find(t => t.id === tenantId);
@@ -56,7 +61,8 @@ export async function generateBill(tenantId: string, currentReading: number) {
 
   const newBill = await createBill({
     tenantId,
-    period: getCurrentPeriod(),
+    period: getBillingPeriod(),
+    //period: getBillingPeriod(),
     previousReading,
     currentReading,
     unitsConsumed,

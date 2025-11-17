@@ -1,9 +1,12 @@
 /**
- * Get the current period (month and year) in format "MMM YYYY"
- * Example: "Nov 2025"
+ * Get the *billing* period (which is the *previous* month) in format "MMM YYYY"
+ * Example: If it's November, this returns "Oct 2025"
  */
-export function getCurrentPeriod(): string {
-  return new Date().toLocaleDateString('en-US', { 
+export function getBillingPeriod(): string {
+  const date = new Date();
+  // Go back to the previous month
+  date.setMonth(date.getMonth() - 1);
+  return date.toLocaleDateString('en-US', { 
     month: 'short', 
     year: 'numeric' 
   });

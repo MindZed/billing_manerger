@@ -45,7 +45,7 @@ revalidatePath('/'); // Auto re-fetch
 ```
 
 ### 5. **Dynamic Dates**
-- Created `/lib/date-utils.ts` with `getCurrentPeriod()` helper
+- Created `/lib/date-utils.ts` with `getBillingPeriod()` helper
 - Removed ALL hardcoded "Nov 2025" references
 - Updated components:
   - `components/Dashboard.tsx`

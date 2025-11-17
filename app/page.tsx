@@ -1,12 +1,12 @@
-import { getTenants, getBills, getRentPayments } from './actions';
+import { getTenants, getRentPayments, getCurrentMonthBills } from './actions';
 import ClientApp from './ClientApp';
 
 export default async function Home() {
   const [tenants, bills, rentPayments] = await Promise.all([
     getTenants(),
-    getBills(),
+    getCurrentMonthBills(),
     getRentPayments()
-  ]);
+  ]); 
 
   return (
     <ClientApp 

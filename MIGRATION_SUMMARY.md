@@ -77,8 +77,8 @@ period: 'Nov 2025'
 
 **After (Dynamic)**:
 ```typescript
-import { getCurrentPeriod } from '@/lib/utils';
-period: getCurrentPeriod() // "Dec 2024" or current month
+import { getBillingPeriod } from '@/lib/utils';
+period: getBillingPeriod() // "Dec 2024" or current month
 ```
 
 ## How Data Flow Works Now
@@ -166,7 +166,7 @@ To migrate from the old version:
 - [x] ✅ Refactor ClientApp to use props (not local state)
 - [x] ✅ Remove hardcoded dates
 - [x] ✅ Add dynamic date utilities
-- [x] ✅ Update all components to use getCurrentPeriod()
+- [x] ✅ Update all components to use getBillingPeriod()
 - [x] ✅ Add proper TypeScript types
 - [x] ✅ Simplify server action handlers
 - [ ] 🔲 Set up your database (see SETUP_GUIDE.md)

@@ -1,6 +1,6 @@
 import { Tenant, Bill, RentPayment } from '../lib/types';
-import { Zap, DollarSign, AlertCircle, TrendingUp, ChevronRight } from 'lucide-react';
-import { getCurrentPeriod } from '../lib/date-utils';
+import { Zap, IndianRupee, AlertCircle, TrendingUp, ChevronRight, TicketCheck, ReceiptIndianRupee   } from 'lucide-react';
+import { getBillingPeriod } from '../lib/date-utils';
 
 interface DashboardProps {
   tenants: Tenant[];
@@ -10,14 +10,16 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ tenants, bills, rentPayments, onNavigate }: DashboardProps) {
-  const currentPeriod = getCurrentPeriod();
+  const currentPeriod = getBillingPeriod();
   
   // Calculate stats
-  const currentMonthBills = bills.filter(b => b.period === currentPeriod);
+  const currentMonthBills = bills
   const pendingBills = currentMonthBills.filter(b => b.status === 'pending');
   const paidBills = currentMonthBills.filter(b => b.status === 'paid');
-  
+
   const totalElectricityRevenue = paidBills.reduce((sum, b) => sum + b.amount, 0);
+  const expectedElectricityRevenue = currentMonthBills.reduce((sum, b) => sum + b.amount, 0);
+  const pendingElectricityRevenue =  expectedElectricityRevenue - totalElectricityRevenue;
   
   const currentMonthRent = rentPayments.filter(r => r.month === currentPeriod);
   const unpaidRent = currentMonthRent.filter(r => r.status === 'pending');
@@ -40,12 +42,12 @@ export default function Dashboard({ tenants, bills, rentPayments, onNavigate }: 
       {/* Key Stats Cards */}
       <div className="space-y-4">
         {/* Total Monthly Revenue */}
-        <div className="bg-[#1F1F1F] rounded-xl p-6 border-2 border-[#42A5F5]">
+        <div className="bg-gradient-to-br from-teal-950 to-teal-900/10 rounded-xl p-6 border-2 border-teal-950">
           <div className="flex items-start justify-between mb-2">
-            <div className="p-2 bg-[#42A5F5]/20 rounded-lg">
-              <DollarSign className="w-6 h-6 text-[#42A5F5]" />
+              <div className="p-2 bg-emerald-900/50 rounded-lg">
+              <IndianRupee className="w-6 h-6 text-green-500" />
             </div>
-            <span className="px-3 py-1 bg-[#FFA726]/20 text-[#FFA726] rounded-full text-xs">
+            <span className="px-3 py-1 bg-white/20 text-green-400 rounded-full text-xs">
               {currentPeriod}
             </span>
           </div>
@@ -58,33 +60,33 @@ export default function Dashboard({ tenants, bills, rentPayments, onNavigate }: 
 
         {/* Pending Bills */}
         <div 
-          className="bg-[#1F1F1F] rounded-xl p-6 border border-[#2A2A2A] active:bg-[#252525] transition-colors cursor-pointer"
+          className="bg-[#121010] rounded-xl p-6 border border-[#2A2A2A] active:bg-[#252525] transition-colors cursor-pointer"
           onClick={() => onNavigate('electricity')}
         >
           <div className="flex items-start justify-between mb-2">
-            <div className="p-2 bg-[#FFA726]/20 rounded-lg">
-              <AlertCircle className="w-6 h-6 text-[#FFA726]" />
+            <div className="p-2 bg-teal-700/20 rounded-lg">
+              <TicketCheck className="w-6 h-6 text-teal-600" />
             </div>
-            <span className="px-3 py-1 bg-[#FFA726]/20 text-[#FFA726] rounded-full text-xs">
-              To Bill
+            <span className={`px-3 py-1  ${pendingBills.length === 0? 'bg-green-800/50 text-emerald-400' :'text-yellow-600 bg-orange-900/50'} rounded-full text-xs`}>
+              {pendingBills.length === 0? 'Relax!' :'To Collect'}
             </span>
           </div>
-          <div className="text-sm text-[#A0A0A0] mb-1">Pending Bills</div>
-          <div className="text-3xl mb-1">{pendingBills.length}</div>
-          <div className="text-xs text-[#A0A0A0]">Unpaid electricity bills</div>
+          <div className="text-sm text-[#A0A0A0] mb-1">Pending Electricity Bills</div>
+          <div className="text-3xl mb-1">0{pendingBills.length}</div>
+          <div className="text-xs text-[#A0A0A0]">Expected: {expectedElectricityRevenue}, Remaining: {pendingElectricityRevenue} </div>
         </div>
 
         {/* Unpaid Rent */}
         <div 
-          className="bg-[#1F1F1F] rounded-xl p-6 border border-[#2A2A2A] active:bg-[#252525] transition-colors cursor-pointer"
+          className="bg-[#121010] rounded-xl p-6 border border-[#2A2A2A] active:bg-[#252525] transition-colors cursor-pointer"
           onClick={() => onNavigate('rent')}
         >
           <div className="flex items-start justify-between mb-2">
-            <div className="p-2 bg-[#FFA726]/20 rounded-lg">
-              <AlertCircle className="w-6 h-6 text-[#FFA726]" />
+            <div className="p-2 bg-teal-700/20 rounded-lg">
+              <ReceiptIndianRupee className="w-6 h-6 text-teal-600" />
             </div>
-            <span className="px-3 py-1 bg-[#FFA726]/20 text-[#FFA726] rounded-full text-xs">
-              To Collect
+            <span className={`px-3 py-1  ${pendingBills.length === 0? 'bg-green-800/50 text-emerald-400' :'text-yellow-600 bg-orange-900/50'} rounded-full text-xs`}>
+              {pendingBills.length === 0? 'Relax!' :'To Collect'}
             </span>
           </div>
           <div className="text-sm text-[#A0A0A0] mb-1">Unpaid Rent</div>
@@ -95,9 +97,9 @@ export default function Dashboard({ tenants, bills, rentPayments, onNavigate }: 
         </div>
 
         {/* Total Units Consumed */}
-        <div className="bg-[#1F1F1F] rounded-xl p-6 border border-[#2A2A2A]">
+        <div className="bg-gradient-to-t from-emerald-500/30 to-emerald-900/30 rounded-xl p-6 border border-[#2A2A2A]">
           <div className="flex items-start justify-between mb-2">
-            <div className="p-2 bg-[#66BB6A]/20 rounded-lg">
+            <div className="p-2 bg-teal-700/20 rounded-lg">
               <Zap className="w-6 h-6 text-[#66BB6A]" />
             </div>
             <TrendingUp className="w-5 h-5 text-[#66BB6A]" />
@@ -117,16 +119,16 @@ export default function Dashboard({ tenants, bills, rentPayments, onNavigate }: 
               <div
                 key={tenant.id}
                 onClick={() => onNavigate('electricity', tenant)}
-                className="bg-[#1F1F1F] rounded-xl p-4 border border-[#FFA726]/30 active:bg-[#252525] transition-colors cursor-pointer"
+                className="bg-orange-500/10 rounded-xl p-4 border border-[#FFA726]/30 active:bg-[#252525] transition-colors cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#FFA726]/20 rounded-lg">
+                    <div className="p-2 bg-orange-500/20 rounded-lg">
                       <Zap className="w-5 h-5 text-[#FFA726]" />
                     </div>
                     <div>
-                      <div className="mb-1">{tenant.flatNo} - Needs Reading</div>
-                      <div className="text-sm text-[#A0A0A0]">{tenant.name}</div>
+                      <div className="mb-1">{tenant.name} - Needs Reading</div>
+                      <div className="text-sm text-[#A0A0A0]">{tenant.phone}</div>
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-[#A0A0A0]" />

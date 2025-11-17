@@ -1,6 +1,6 @@
 import { Tenant, Bill } from '../lib/types';
 import { Zap, ChevronRight } from 'lucide-react';
-import { getCurrentPeriod } from '../lib/date-utils';
+import { getBillingPeriod } from '../lib/date-utils';
 
 interface ElectricityProps {
   tenants: Tenant[];
@@ -10,8 +10,8 @@ interface ElectricityProps {
 
 export default function Electricity({ tenants, bills, onSelectCustomer }: ElectricityProps) {
   const electricityCustomers = tenants.filter(t => t.electricityService);
-  const currentPeriod = getCurrentPeriod();
-  const currentMonthBills = bills.filter(b => b.period === currentPeriod);
+  const currentPeriod = getBillingPeriod();
+  const currentMonthBills = bills
 
   const getCustomerStatus = (tenant: Tenant) => {
     const bill = currentMonthBills.find(b => b.tenantId === tenant.id);
@@ -32,7 +32,7 @@ export default function Electricity({ tenants, bills, onSelectCustomer }: Electr
       .filter(b => b.tenantId === tenant.id)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     
-    if (tenantBills.length === 0) return 'No readings yet';
+    if (tenantBills.length === 0) return 'No readings!';
     
     const lastBill = tenantBills[0];
     const date = new Date(lastBill.date);
@@ -61,12 +61,12 @@ export default function Electricity({ tenants, bills, onSelectCustomer }: Electr
               <div
                 key={tenant.id}
                 onClick={() => onSelectCustomer(tenant)}
-                className="bg-[#1F1F1F] rounded-xl p-4 border border-[#2A2A2A] active:bg-[#252525] transition-colors cursor-pointer"
+                className="bg-gradient-to-r from-gray-700/30 to-gray-900/30 rounded-xl p-4 border border-teal-950/50 active:bg-[#252525] transition-colors cursor-pointer"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3 flex-1">
-                    <div className="p-2 bg-[#42A5F5]/20 rounded-lg">
-                      <Zap className="w-5 h-5 text-[#42A5F5]" />
+                    <div className="p-2 bg-teal-700/20 rounded-lg">
+                      <Zap className="w-5 h-5 text-teal-600" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">

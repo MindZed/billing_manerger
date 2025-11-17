@@ -1,6 +1,6 @@
 import { Tenant, RentPayment } from '../lib/types';
 import { Home, Calendar, DollarSign } from 'lucide-react';
-import { getCurrentPeriod } from '../lib/date-utils';
+import { getBillingPeriod } from '../lib/date-utils';
 
 interface RentPaymentsProps {
   tenants: Tenant[];
@@ -10,7 +10,7 @@ interface RentPaymentsProps {
 
 export default function RentPayments({ tenants, rentPayments, onTogglePayment }: RentPaymentsProps) {
   const rentCustomers = tenants.filter(t => t.rentService);
-  const currentPeriod = getCurrentPeriod();
+  const currentPeriod = getBillingPeriod();
   const currentMonthPayments = rentPayments.filter(p => p.month === currentPeriod);
 
   const getPaymentForTenant = (tenantId: string) => {
