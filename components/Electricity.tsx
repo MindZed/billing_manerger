@@ -1,6 +1,7 @@
 import { Tenant, Bill } from '../lib/types';
 import { Zap, ChevronRight } from 'lucide-react';
 import { getBillingPeriod } from '../lib/date-utils';
+import PrintWindowButton from './PrintWindowButton';
 
 interface ElectricityProps {
   tenants: Tenant[];
@@ -39,6 +40,10 @@ export default function Electricity({ tenants, bills, onSelectCustomer }: Electr
     return date.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
   };
 
+  const totalBills = currentMonthBills.filter((b) => b.status === "pending").length;
+  const paidBills = currentMonthBills.filter((b) => b.status === "paid").length;
+
+
   return (
     <div className="p-4 space-y-4">
       {/* Summary Stats */}
@@ -55,17 +60,21 @@ export default function Electricity({ tenants, bills, onSelectCustomer }: Electr
             <div className="flex flex-col">
               <span className="text-[#A0A0A0] text-sm">Bills</span>
               <span className="font-semibold text-2xl text-[#42A5F5]">
-                {currentMonthBills.filter((b) => b.status === "pending").length}
+                {totalBills}
               </span>
             </div>
 
             <div className="flex flex-col">
               <span className="text-[#A0A0A0] text-sm">Paid</span>
               <span className="font-semibold text-2xl text-[#66BB6A]">
-                {currentMonthBills.filter((b) => b.status === "paid").length}
+                {paidBills}
               </span>
             </div>
           </div>
+          {electricityCustomers.length === totalBills && totalBills !== 0 && 
+          <PrintWindowButton />
+          }
+
         </div>
       )}
       {electricityCustomers.length === 0 ? (

@@ -1,9 +1,27 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+// Import globals.css from the same directory
 import './globals.css';
 
+export const viewport: Viewport = {
+  themeColor: "#1A1A1A",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
-  title: 'Billz - By MindzedTech',
-  description: 'Track electricity consumption and rent payments for our tenants',
+  title: 'Billz',
+  description: 'Track electricity consumption and rent payments',
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Billz",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -13,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-[#1A1A1A] overscroll-none">{children}</body>
     </html>
   );
 }
